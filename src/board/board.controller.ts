@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, Res } from "@nestjs/common";
-import { Board } from "./board.model";
+import { CreateBoardDto } from "./dto/create-board";
 import { BoardService } from "./board.service";
 import { Request, Response } from "express";
 
@@ -20,22 +20,22 @@ export class BoardController{
   }
 
   @Post()
-  async postBoard(@Body() postData: Board):Promise<Board>{
+  async postBoard(@Body() postData: CreateBoardDto):Promise<CreateBoardDto>{
     return this.boardService.createBoard(postData)
   }
 
   @Get(':id')
-  async getBoard(@Param('id') id:number):Promise<Board | null>{
+  async getBoard(@Param('id') id:number):Promise<CreateBoardDto | null>{
     return this.boardService.getBoard(id)
   }
 
   @Delete(':id')
-  async deleteBoard(@Param('id') id:number):Promise<Board>{
+  async deleteBoard(@Param('id') id:number):Promise<CreateBoardDto>{
     return this.boardService.deleteBoard(id)
   }
 
   @Put(':id')
-  async updateBook(@Param('id') id: number,@Body() data: Board): Promise<Board> {
+  async updateBook(@Param('id') id: number,@Body() data: CreateBoardDto): Promise<CreateBoardDto> {
     return this.boardService.updateBoard(id,data);
   }
 }
