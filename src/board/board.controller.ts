@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, Res } from "@nestjs/common";
-import { CreateBoardDto } from "./dto/create-board";
+import { CreateBoardDto } from "./dto/create-board.dto";
 import { BoardService } from "./board.service";
 import { Request, Response } from "express";
 
