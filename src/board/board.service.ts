@@ -1,5 +1,5 @@
 import { PrismaService } from "src/prisma.service";
-import { CreateBoardDto } from "./dto/create-board";
+import { CreateBoardDto } from "./dto/create-board.dto";
 import { Injectable } from "@nestjs/common";
 
 
@@ -18,7 +18,7 @@ export class BoardService{
 
   async createBoard(data: CreateBoardDto): Promise<CreateBoardDto>{
     return this.prisma.board.create({
-      data,
+      data
     })
   }
 

@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 
-export class CreateBoardDto implements Prisma.boardCreateInput{
-    id: number;
+export class CreateBoardDto implements Prisma.BoardCreateInput {
+    // id: number;
     title: string;
     content?: string;
 }
