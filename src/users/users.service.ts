@@ -21,16 +21,22 @@ export class UsersService {
     if(!found){
       throw new HttpException(`there is no ${id}`, 400);
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, id: userId, ...result } = found;
     return result;
     // return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return this.prisma.user.update({
+      where: {id: Number(id)},
+      data: updateUserDto
+    })
+    // return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async deleteUser(id: number):Promise<CreateUserDto> {
+    return this.prisma.user.delete({where: {id:Number(id)}})
+    // return `This action removes a #${id} user`;
   }
 }
