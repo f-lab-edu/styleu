@@ -16,8 +16,9 @@ export class UsersService {
   //   return `This action returns all users`;
   // }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<{[key: string]: any}> {
     const found = await this.prisma.user.findUnique({where: {id:id}})
+    console.log("found: ", found)
     if(!found){
       throw new HttpException(`there is no ${id}`, 400);
     }
@@ -27,7 +28,7 @@ export class UsersService {
     // return `This action returns a #${id} user`;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<{[key: string]: any}> {
     return this.prisma.user.update({
       where: {id: id},
       data: updateUserDto
