@@ -17,7 +17,7 @@ export class UsersService {
   // }
 
   async findOne(id: number) {
-    const found = await this.prisma.user.findUnique({where: {id:Number(id)}})
+    const found = await this.prisma.user.findUnique({where: {id:id}})
     if(!found){
       throw new HttpException(`there is no ${id}`, 400);
     }
@@ -29,14 +29,14 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({
-      where: {id: Number(id)},
+      where: {id: id},
       data: updateUserDto
     })
     // return `This action updates a #${id} user`;
   }
 
   async deleteUser(id: number):Promise<CreateUserDto> {
-    return this.prisma.user.delete({where: {id:Number(id)}})
+    return this.prisma.user.delete({where: {id:id}})
     // return `This action removes a #${id} user`;
   }
 }
