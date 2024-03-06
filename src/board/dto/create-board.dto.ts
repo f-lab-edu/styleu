@@ -1,7 +1,6 @@
-import { Prisma } from "@prisma/client";
-
-export class CreateBoardDto implements Prisma.BoardCreateInput {
+export class CreateBoardDto {
     // id: number;
     title: string;
     content?: string;
+    userId?: number;
 }

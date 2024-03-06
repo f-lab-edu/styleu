@@ -1,27 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, Res } from "@nestjs/common";
-import { CreateBoardDto } from "./dto/create-board.dto";
+import { Body, Controller, Get, Param, Post, Delete, Put } from "@nestjs/common";
 import { BoardService } from "./board.service";
-import { Request, Response } from "express";
+import { CreateBoardDto } from "./dto/create-board.dto";
 
 @Controller('api/v1/board')
 export class BoardController{
-
   constructor(private readonly boardService: BoardService){}
-
-
-  @Get()
-  async getAllBoard(@Req() request:Request, @Res() response:Response ):Promise<any>{
-    const result =  await this.boardService.getAllBoard()
-    return response.status(200).json({
-      status: "Ok!",
-      message: "Successfully fetch data!",
-      result: result
-    })
-  }
 
   @Post()
   async postBoard(@Body() postData: CreateBoardDto):Promise<CreateBoardDto>{
     return this.boardService.createBoard(postData)
+  }
+
+  @Get()
+  async getAllBoard():Promise<CreateBoardDto[]> {
+    return this.boardService.getAllBoard();
   }
 
   @Get(':id')
@@ -29,13 +21,18 @@ export class BoardController{
     return this.boardService.getBoard(id)
   }
 
-  @Delete(':id')
-  async deleteBoard(@Param('id') id:number):Promise<CreateBoardDto>{
-    return this.boardService.deleteBoard(id)
+  @Get('post/:userId')
+  async findAllBoardsByUserId(@Param('userId') userId: number) {
+    return this.boardService.findAllBoardsByUserId(userId);
   }
 
   @Put(':id')
   async updateBook(@Param('id') id: number,@Body() data: CreateBoardDto): Promise<CreateBoardDto> {
     return this.boardService.updateBoard(id,data);
+  }
+
+  @Delete(':id')
+  async deleteBoard(@Param('id') id:number):Promise<CreateBoardDto>{
+    return this.boardService.deleteBoard(id)
   }
 }
