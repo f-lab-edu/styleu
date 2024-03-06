@@ -2,6 +2,7 @@ import { PrismaService } from "src/prisma.service";
 import { Injectable, HttpException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
   //   return `This action returns all users`;
   // }
 
-  async findOne(id: number): Promise<{[key: string]: any}> {
+  async findOne(id: number): Promise<Omit<Prisma.UserCreateInput, 'password' | 'id'>> {
     const found = await this.prisma.user.findUnique({where: {id:id}})
     console.log("found: ", found)
     if(!found){
