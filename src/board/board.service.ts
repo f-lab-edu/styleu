@@ -1,8 +1,6 @@
 import { PrismaService } from "src/prisma.service";
 import { CreateBoardDto } from "./dto/create-board.dto";
 import {Injectable, NotFoundException} from "@nestjs/common";
-import {CreateUserDto} from "../users/dto/create-user.dto";
-
 
 @Injectable()
 export class BoardService{
@@ -12,7 +10,6 @@ export class BoardService{
   async createBoard(createBoardDto: CreateBoardDto) {
     const {title, content, userId} = createBoardDto;
 
-    // @ts-ignore
     return this.prisma.board.create({
       data: {
         content,
