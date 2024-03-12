@@ -41,7 +41,7 @@ export class BoardService{
   async findAllBoardsByUserId(userId: number) {
     return this.prisma.board.findMany({
       where: {
-        userId: Number(userId),
+        userId: userId,
       },
       include: {
         user:true
