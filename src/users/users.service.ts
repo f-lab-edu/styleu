@@ -17,6 +17,10 @@ export class UsersService {
   //   return `This action returns all users`;
   // }
 
+  async findByEmail(email: string): Promise<Prisma.UserCreateInput | undefined> {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
+
   async findOne(id: number): Promise<Omit<Prisma.UserCreateInput, 'password' | 'id'>> {
     const found = await this.prisma.user.findUnique({where: {id:id}})
     console.log("found: ", found)
