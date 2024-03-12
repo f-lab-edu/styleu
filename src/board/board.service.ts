@@ -23,7 +23,6 @@ export class BoardService{
     });
   }
 
-
   async getAllBoard(): Promise<CreateBoardDto[]>{
     return this.prisma.board.findMany({});
   };
