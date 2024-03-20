@@ -1,13 +1,24 @@
-import {Controller, Get, Post, Body, Param, Patch, Delete} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Public } from "../auth/decorators/public.decorator";
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 // import { GetUsersDto } from './dto/get-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
+  @Get()
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  findAll() {
+    // 모든 사용자 정보를 반환하는 로직
+    return this.usersService.findAll();
+  }
 
+  @Public()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     // const { name, email } = createUserDto;
