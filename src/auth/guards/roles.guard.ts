@@ -17,8 +17,8 @@ export class RolesGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
-        // 'ADMIN' Role을 가진 사용자는 모든 요청에 접근 가능
-        if (user.role === 1) {
+        const ADMIN_ROLE = 1
+        if (user.role === ADMIN_ROLE) {
             return true;
         }
 
