@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
 model User{
   id      Int     @id @default(autoincrement())
   email String @unique
@@ -14,6 +20,8 @@ model User{
   password String @db.VarChar(100)
   createdAt DateTime @default(now()) @map("created_at")
   board Board[]
+  roleId    Int?
+  role      Role?    @relation(fields: [roleId], references: [id])
 }
 
 model Board {
