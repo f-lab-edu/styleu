@@ -7,4 +7,6 @@ export class CreateBoardDto {
     @IsInt()
     @IsNotEmpty()
     userId?: number;
+
+    isVisible?: boolean;
 }

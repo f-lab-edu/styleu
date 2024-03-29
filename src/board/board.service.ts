@@ -1,14 +1,29 @@
 import { PrismaService } from "src/prisma.service";
 import { CreateBoardDto } from "./dto/create-board.dto";
-import {Injectable, NotFoundException} from "@nestjs/common";
+import {Injectable, NotFoundException, UnauthorizedException} from "@nestjs/common";
 
 @Injectable()
 export class BoardService{
 
   constructor(private prisma: PrismaService){}
 
+  async updateVisibility(id: number, userId: number, isVisible: boolean): Promise<CreateBoardDto> {
+    const board = await this.prisma.board.findUnique({
+      where: {id},
+    });
+
+    if (board.userId !== userId) {
+      throw new UnauthorizedException('You can only change visibility of your own posts.');
+    }
+
+    return this.prisma.board.update({
+      where: {id},
+      data: {isVisible},
+    });
+  }
+
   async createBoard(createBoardDto: CreateBoardDto) {
-    const {title, content, userId} = createBoardDto;
+    const {title, content, userId, isVisible} = createBoardDto;
 
     return this.prisma.board.create({
       data: {
@@ -18,7 +33,8 @@ export class BoardService{
           connect: {
             id: userId
           }
-        }
+        },
+        isVisible
       }
     });
   }
@@ -47,7 +63,6 @@ export class BoardService{
       }
     });
   }
-
 
   async updateBoard(id:number,data:CreateBoardDto):Promise<CreateBoardDto>{
     return this.prisma.board.update({
