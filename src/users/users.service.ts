@@ -2,23 +2,42 @@ import { PrismaService } from "src/prisma.service";
 import { Injectable, HttpException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Prisma, User } from "@prisma/client";
+import {Prisma, Role, User} from "@prisma/client";
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService){}
-  async createUser(createUserDto: CreateUserDto) {
-    return this.prisma.user.create({
-      data: createUserDto
-    })
+
+  findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        nickname: true,
+        roleId: true
+      },
+    });
   }
 
-  // findAll() {
-  //   return `This action returns all users`;
-  // }
+  async createUser(createUserDto: CreateUserDto) {
+    const { email, nickname, password, roleId } = createUserDto
+    return this.prisma.user.create({
+      data: {
+        email,
+        nickname,
+        password,
+        role: {
+          connect:{
+            id: roleId
+          }
+        }
+      }
+    })
 
-  async findByEmail(email: string):Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+  }
+
+  async findByEmail(email: string):Promise<User & {role: Role} | null> {
+    return this.prisma.user.findUnique({ where: { email }, include: {role: true} });
   }
 
   async findOne(id: number): Promise<Omit<Prisma.UserCreateInput, 'password' | 'id'>> {

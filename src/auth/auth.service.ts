@@ -12,11 +12,15 @@ export class AuthService {
     async login(email: string, pass: string): Promise<{ access_token: string }> {
         // 이메일로 사용자 정보 조회
         const user = await this.usersService.findByEmail(email);
+        console.log(user)
         // 사용자가 없거나 비밀번호가 일치하지 않으면 UnauthorizedException 예외 발생
-        if (user?.password !== pass) {
-            throw new UnauthorizedException();
+        if (!user) {
+            throw new UnauthorizedException('The user was not found.');
         }
-        const payload = { sub: user.id, email: user.email };
+        if (user.password !== pass) {
+            throw new UnauthorizedException(`The user (email: ${email}} password does not match`);
+        }
+        const payload = { sub: user.id, email: user.email, role: user.role.name };
         // Access token 발급
         return {
             access_token: await this.jwtService.sign(payload),
