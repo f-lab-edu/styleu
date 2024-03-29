@@ -12,7 +12,9 @@ export class UnauthorizedExceptionFilter implements ExceptionFilter {
         // 보안에 민감한 정보는 서버 로그에만 기록
         console.error(`Unauthorized access attempt: ${request.url}`, exception.message);
 
-        // 클라이언트에게는 일반적인 메시지 전달
+        this.hideOriginalMessageForSecurityAndResponse(response, status, request)
+    }
+    hideOriginalMessageForSecurityAndResponse(response, status, request){
         response
             .status(status)
             .json({

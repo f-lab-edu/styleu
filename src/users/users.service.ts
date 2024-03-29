@@ -2,7 +2,7 @@ import { PrismaService } from "src/prisma.service";
 import { Injectable, HttpException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Prisma, User } from "@prisma/client";
+import {Prisma, Role, User} from "@prisma/client";
 
 @Injectable()
 export class UsersService {
@@ -36,8 +36,8 @@ export class UsersService {
 
   }
 
-  async findByEmail(email: string):Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+  async findByEmail(email: string):Promise<User & {role: Role} | null> {
+    return this.prisma.user.findUnique({ where: { email }, include: {role: true} });
   }
 
   async findOne(id: number): Promise<Omit<Prisma.UserCreateInput, 'password' | 'id'>> {
