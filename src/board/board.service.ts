@@ -1,14 +1,35 @@
 import { PrismaService } from "src/prisma.service";
 import { CreateBoardDto } from "./dto/create-board.dto";
-import {Injectable, NotFoundException} from "@nestjs/common";
+import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
 
 @Injectable()
 export class BoardService{
 
   constructor(private prisma: PrismaService){}
 
+  async updateVisibility(id: number, userId: number, isVisible: boolean): Promise<CreateBoardDto> {
+    const board = await this.prisma.board.findUnique({
+      where: { id },
+    });
+
+    if (!board) {
+      throw new NotFoundException();
+    }
+
+    if (board.userId !== userId) {
+      throw new ForbiddenException();
+    }
+
+    const updatedBoard = await this.prisma.board.update({
+      where: { id },
+      data: { isVisible },
+    });
+
+    return updatedBoard;
+  }
+
   async createBoard(createBoardDto: CreateBoardDto) {
-    const {title, content, userId} = createBoardDto;
+    const {title, content, userId, isVisible} = createBoardDto;
 
     return this.prisma.board.create({
       data: {
@@ -18,18 +39,21 @@ export class BoardService{
           connect: {
             id: userId
           }
-        }
+        },
+        isVisible
       }
     });
   }
 
   async getAllBoard(): Promise<CreateBoardDto[]>{
-    return this.prisma.board.findMany({});
+    return this.prisma.board.findMany({
+      where: { isVisible: true },
+    });
   };
 
   async getBoard(id:number): Promise<CreateBoardDto | null>{
     const board = this.prisma.board.findUnique({
-      where: {id},
+      where: {id, isVisible: true},
     });
     if (!board) {
       throw new NotFoundException(`Board with ID ${id} not found`);
@@ -40,14 +64,13 @@ export class BoardService{
   async findAllBoardsByUserId(userId: number) {
     return this.prisma.board.findMany({
       where: {
-        userId: userId,
+        userId: userId
       },
       include: {
         user:true
       }
     });
   }
-
 
   async updateBoard(id:number,data:CreateBoardDto):Promise<CreateBoardDto>{
     return this.prisma.board.update({
