@@ -1,6 +1,6 @@
 import { PrismaService } from "src/prisma.service";
 import { CreateBoardDto } from "./dto/create-board.dto";
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
 
 @Injectable()
 export class BoardService{
@@ -17,7 +17,7 @@ export class BoardService{
     }
 
     if (board.userId !== userId) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     const updatedBoard = await this.prisma.board.update({

@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Delete, Put, Request, UseGuards, Pa
 import { BoardService } from "./board.service";
 import { CreateBoardDto } from "./dto/create-board.dto";
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { ForbiddenException } from "@nestjs/common";
 
 @Controller('api/v1/board')
 export class BoardController{
@@ -34,7 +35,14 @@ export class BoardController{
   }
 
   @Get('post/:userId')
-  async findAllBoardsByUserId(@Param('userId') userId: number) {
+  @UseGuards(AuthGuard)
+  async findAllBoardsByUserId(
+      @Param('userId') userId: number,
+      @Request() req
+  ) {
+    if (userId !== req.user.sub) {
+      throw new ForbiddenException('Access denied');
+    }
     return this.boardService.findAllBoardsByUserId(userId);
   }
 
