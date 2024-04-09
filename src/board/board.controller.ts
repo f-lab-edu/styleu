@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Delete, Put, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Delete, Put, Request, UseGuards, Patch } from "@nestjs/common";
 import { BoardService } from "./board.service";
 import { CreateBoardDto } from "./dto/create-board.dto";
 import { AuthGuard } from '../auth/guards/auth.guard';
@@ -7,13 +7,12 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 export class BoardController{
   constructor(private readonly boardService: BoardService){}
 
-  @Put('visibility/:id')
+  @Patch('/:id/visibility')
   @UseGuards(AuthGuard)
   async updateVisibility(
       @Param('id') id: number,
       @Request() req,
       @Body('isVisible') isVisible: boolean
-
   ): Promise<CreateBoardDto> {
     console.log(req.user)
     return this.boardService.updateVisibility(id, req.user.sub, isVisible);
@@ -48,6 +47,4 @@ export class BoardController{
   async deleteBoard(@Param('id') id:number):Promise<CreateBoardDto>{
     return this.boardService.deleteBoard(id)
   }
-
-
 }

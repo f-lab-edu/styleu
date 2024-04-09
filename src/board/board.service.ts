@@ -1,6 +1,6 @@
 import { PrismaService } from "src/prisma.service";
 import { CreateBoardDto } from "./dto/create-board.dto";
-import {Injectable, NotFoundException, UnauthorizedException} from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 
 @Injectable()
 export class BoardService{
@@ -9,17 +9,23 @@ export class BoardService{
 
   async updateVisibility(id: number, userId: number, isVisible: boolean): Promise<CreateBoardDto> {
     const board = await this.prisma.board.findUnique({
-      where: {id},
+      where: { id },
     });
 
-    if (board.userId !== userId) {
-      throw new UnauthorizedException('You can only change visibility of your own posts.');
+    if (!board) {
+      throw new NotFoundException();
     }
 
-    return this.prisma.board.update({
-      where: {id},
-      data: {isVisible},
+    if (board.userId !== userId) {
+      throw new UnauthorizedException();
+    }
+
+    const updatedBoard = await this.prisma.board.update({
+      where: { id },
+      data: { isVisible },
     });
+
+    return updatedBoard;
   }
 
   async createBoard(createBoardDto: CreateBoardDto) {
@@ -40,12 +46,14 @@ export class BoardService{
   }
 
   async getAllBoard(): Promise<CreateBoardDto[]>{
-    return this.prisma.board.findMany({});
+    return this.prisma.board.findMany({
+      where: { isVisible: true },
+    });
   };
 
   async getBoard(id:number): Promise<CreateBoardDto | null>{
     const board = this.prisma.board.findUnique({
-      where: {id},
+      where: {id, isVisible: true},
     });
     if (!board) {
       throw new NotFoundException(`Board with ID ${id} not found`);
@@ -56,7 +64,7 @@ export class BoardService{
   async findAllBoardsByUserId(userId: number) {
     return this.prisma.board.findMany({
       where: {
-        userId: userId,
+        userId: userId
       },
       include: {
         user:true
