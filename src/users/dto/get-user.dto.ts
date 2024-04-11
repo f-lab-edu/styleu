@@ -1,4 +1,4 @@
 export class GetUsersDto {
-    offset: number;
-    limit: number;
+  offset: number
+  limit: number
 }
