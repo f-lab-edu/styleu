@@ -1,4 +1,4 @@
-import { Controller, Get, HostParam } from '@nestjs/common';
+import { Controller, Get, HostParam } from '@nestjs/common'
 
 // @Controller({ host: 'api.localhost' })
 // export class ApiController {
@@ -10,8 +10,8 @@ import { Controller, Get, HostParam } from '@nestjs/common';
 
 @Controller({ host: ':version.api.localhost' })
 export class ApiController {
-    @Get()
-    index(@HostParam('version') version: string): string {
-        return `Hello, API ${version}`;
-    }
+  @Get()
+  index(@HostParam('version') version: string): string {
+    return `Hello, API ${version}`
+  }
 }

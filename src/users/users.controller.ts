@@ -1,22 +1,22 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Public } from "../auth/decorators/public.decorator";
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from "../auth/enums/role.enum";
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common'
+import { UsersService } from './users.service'
+import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
+import { Public } from '../auth/decorators/public.decorator'
+import { RolesGuard } from '../auth/guards/roles.guard'
+import { Roles } from '../auth/decorators/roles.decorator'
+import { Role } from '../auth/enums/role.enum'
 // import { GetUsersDto } from './dto/get-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
   @Get()
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   findAll() {
     // 모든 사용자 정보를 반환하는 로직
-    return this.usersService.findAll();
+    return this.usersService.findAll()
   }
 
   @Public()
@@ -34,12 +34,11 @@ export class UsersController {
 
   @Get(':id')
   findOneRedirection(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(+id)
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: number):Promise<CreateUserDto>{
+  deleteUser(@Param('id') id: number): Promise<CreateUserDto> {
     return this.usersService.deleteUser(id)
   }
-
 }
